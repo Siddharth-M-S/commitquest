@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 interface Me {
   login: string | null;
   pro: boolean;
+  authConfigured: boolean;
 }
 
 const FREE = [
@@ -30,7 +31,7 @@ export default function PricingPage() {
     fetch("/api/me")
       .then((r) => r.json())
       .then(setMe)
-      .catch(() => setMe({ login: null, pro: false }));
+      .catch(() => setMe({ login: null, pro: false, authConfigured: false }));
   }, []);
 
   async function upgrade() {
@@ -95,13 +96,21 @@ export default function PricingPage() {
               >
                 {loading ? "Redirecting…" : "Upgrade to Pro"}
               </button>
-            ) : (
+            ) : me.authConfigured ? (
               <button
-                onClick={() => signIn("github")}
+                onClick={() => signIn("github", { callbackUrl: "/pricing" })}
                 className="w-full rounded-lg bg-white py-3 font-bold text-black transition hover:bg-gray-200"
               >
                 Sign in with GitHub
               </button>
+            ) : (
+              <div className="rounded-lg border border-gray-700 bg-gray-900/60 p-3 text-center text-sm text-gray-400">
+                GitHub login isn&apos;t set up yet.
+                <br />
+                <span className="text-gray-500">
+                  Add OAuth keys to enable Pro sign-in.
+                </span>
+              </div>
             )}
           </div>
         </div>
