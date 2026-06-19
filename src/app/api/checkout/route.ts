@@ -24,16 +24,22 @@ export async function POST() {
 
   const base = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
-  const checkout = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    line_items: [{ price: PRO_PRICE_ID, quantity: 1 }],
-    // Carry the GitHub login through to the webhook.
-    client_reference_id: session.login,
-    metadata: { login: session.login },
-    subscription_data: { metadata: { login: session.login } },
-    success_url: `${base}/${session.login}?upgraded=1`,
-    cancel_url: `${base}/pricing`,
-  });
+  try {
+    const checkout = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      line_items: [{ price: PRO_PRICE_ID, quantity: 1 }],
+      // Carry the GitHub login through to the webhook.
+      client_reference_id: session.login,
+      metadata: { login: session.login },
+      subscription_data: { metadata: { login: session.login } },
+      success_url: `${base}/${session.login}?upgraded=1`,
+      cancel_url: `${base}/pricing`,
+    });
 
-  return NextResponse.json({ url: checkout.url });
+    return NextResponse.json({ url: checkout.url });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Checkout failed";
+    console.error("Stripe checkout error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

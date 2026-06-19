@@ -8,7 +8,8 @@ export function getStripe(): Stripe | null {
   if (stripe) return stripe;
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) return null;
-  stripe = new Stripe(key, { apiVersion: "2026-05-27.dahlia" });
+  // Let the SDK use its default API version to avoid version-mismatch errors.
+  stripe = new Stripe(key);
   return stripe;
 }
 
