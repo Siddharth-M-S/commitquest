@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  outputFileTracingIncludes: {
-    "/api/og/[username]": ["./assets/**"],
+  experimental: {
+    outputFileTracingIncludes: {
+      "/api/og/[username]": ["./assets/**"],
+    },
   },
   images: {
     remotePatterns: [
