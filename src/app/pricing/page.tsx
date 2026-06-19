@@ -1,0 +1,115 @@
+"use client";
+
+import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+
+interface Me {
+  login: string | null;
+  pro: boolean;
+}
+
+const FREE = [
+  "Current + all-time public stats",
+  "Glossy character card",
+  "Shareable card image",
+  "1 type-based theme",
+];
+
+const PRO = [
+  "Private repo contributions",
+  "Premium card frames (holo, gold, obsidian, rose)",
+  "Watermark removed",
+  "Priority refresh",
+];
+
+export default function PricingPage() {
+  const [me, setMe] = useState<Me | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/me")
+      .then((r) => r.json())
+      .then(setMe)
+      .catch(() => setMe({ login: null, pro: false }));
+  }, []);
+
+  async function upgrade() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/checkout", { method: "POST" });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else alert(data.error ?? "Checkout unavailable.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="min-h-screen px-6 py-16">
+      <div className="mx-auto max-w-4xl text-center">
+        <h1 className="text-4xl font-black sm:text-5xl">
+          Level up with <span className="text-purple-500">Pro</span>
+        </h1>
+        <p className="mt-3 text-gray-400">
+          Everything you need to flex your dev character.
+        </p>
+      </div>
+
+      <div className="mx-auto mt-12 grid max-w-3xl gap-6 sm:grid-cols-2">
+        {/* Free */}
+        <div className="rounded-2xl border border-gray-800 bg-panel p-6">
+          <h2 className="text-xl font-bold">Free</h2>
+          <p className="mt-1 text-3xl font-black">$0</p>
+          <ul className="mt-5 space-y-2 text-sm text-gray-300">
+            {FREE.map((f) => (
+              <li key={f}>✓ {f}</li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Pro */}
+        <div className="rounded-2xl border border-purple-600 bg-gradient-to-b from-purple-900/30 to-panel p-6 shadow-xl">
+          <h2 className="text-xl font-bold text-purple-300">Pro</h2>
+          <p className="mt-1 text-3xl font-black">
+            $4<span className="text-base font-normal text-gray-400">/mo</span>
+          </p>
+          <ul className="mt-5 space-y-2 text-sm text-gray-200">
+            {PRO.map((f) => (
+              <li key={f}>★ {f}</li>
+            ))}
+          </ul>
+
+          <div className="mt-6">
+            {!me ? (
+              <div className="text-sm text-gray-500">Loading…</div>
+            ) : me.pro ? (
+              <div className="rounded-lg bg-purple-600/20 py-3 text-center font-bold text-purple-300">
+                You&apos;re Pro ✦
+              </div>
+            ) : me.login ? (
+              <button
+                onClick={upgrade}
+                disabled={loading}
+                className="w-full rounded-lg bg-purple-600 py-3 font-bold text-white transition hover:bg-purple-500 disabled:opacity-50"
+              >
+                {loading ? "Redirecting…" : "Upgrade to Pro"}
+              </button>
+            ) : (
+              <button
+                onClick={() => signIn("github")}
+                className="w-full rounded-lg bg-white py-3 font-bold text-black transition hover:bg-gray-200"
+              >
+                Sign in with GitHub
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto mt-10 max-w-3xl text-center text-xs text-gray-600">
+        Secure billing by Stripe. Cancel anytime.
+      </div>
+    </main>
+  );
+}
