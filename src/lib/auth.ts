@@ -7,7 +7,10 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GITHUB_CLIENT_ID ?? "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
       authorization: {
-        params: { scope: "read:user public_repo" },
+        // `repo` lets a Pro user's own token read their PRIVATE repos so
+        // private contributions can count toward their card. Only the owner's
+        // token is ever used this way; we never expose private repo names.
+        params: { scope: "read:user repo" },
       },
     }),
   ],

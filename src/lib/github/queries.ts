@@ -26,6 +26,7 @@ export const PROFILE_QUERY = /* GraphQL */ `
           name
           stargazerCount
           isFork
+          isPrivate
           primaryLanguage {
             name
             color

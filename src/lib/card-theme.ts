@@ -107,16 +107,6 @@ export const PREMIUM_THEMES: Record<string, Omit<CardTheme, "stat">> = {
   },
 };
 
-export function resolveTheme(
-  stats: GameStats,
-  themeName?: string | null
-): CardTheme {
-  if (themeName && PREMIUM_THEMES[themeName]) {
-    return { stat: stats.primaryClass?.stat ?? "LCK", ...PREMIUM_THEMES[themeName] };
-  }
-  return themeForStats(stats);
-}
-
 export interface Rarity {
   label: string;
   color: string;

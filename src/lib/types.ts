@@ -27,6 +27,11 @@ export interface RawStats {
   totalIssues: number;
   totalStarsEarned: number;
   totalRepos: number;
+  // Contributions made in private repos the viewer can't see in detail.
+  // Only non-zero when fetched with the owner's own token (Pro self-view).
+  privateContributions: number;
+  // True when this snapshot included private-repo data (owner Pro self-view).
+  includesPrivate: boolean;
   // contribution calendar derived
   longestStreak: number;
   currentStreak: number;

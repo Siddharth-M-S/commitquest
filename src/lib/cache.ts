@@ -1,7 +1,10 @@
 import { Redis } from "@upstash/redis";
 import type { GameStats } from "@/lib/types";
 
-const TTL_SECONDS = 6 * 60 * 60; // 6 hours
+// Free users get a 6h cache (cheap, "stale"). Pro users get a near-live
+// 5-minute cache so their card refreshes almost immediately.
+const FREE_TTL_SECONDS = 6 * 60 * 60; // 6 hours
+const PRO_TTL_SECONDS = 5 * 60; // 5 minutes
 
 // Upstash Redis if configured, otherwise an in-memory Map fallback so the
 // app runs with zero external services during local dev.
@@ -22,14 +25,17 @@ interface MemEntry {
 }
 const memCache = new Map<string, MemEntry>();
 
-function key(login: string): string {
-  return `stats:${login.toLowerCase()}`;
+// Pro stats may include private contributions, so they MUST be cached under a
+// separate key from public (free) stats to avoid leaking private totals.
+function key(login: string, pro: boolean): string {
+  return `stats:${pro ? "pro:" : ""}${login.toLowerCase()}`;
 }
 
 export async function getCachedStats(
-  login: string
+  login: string,
+  pro = false
 ): Promise<GameStats | null> {
-  const k = key(login);
+  const k = key(login, pro);
   if (redis) {
     const v = await redis.get<GameStats>(k);
     return v ?? null;
@@ -45,12 +51,14 @@ export async function getCachedStats(
 
 export async function setCachedStats(
   login: string,
-  value: GameStats
+  value: GameStats,
+  pro = false
 ): Promise<void> {
-  const k = key(login);
+  const k = key(login, pro);
+  const ttl = pro ? PRO_TTL_SECONDS : FREE_TTL_SECONDS;
   if (redis) {
-    await redis.set(k, value, { ex: TTL_SECONDS });
+    await redis.set(k, value, { ex: ttl });
     return;
   }
-  memCache.set(k, { value, expires: Date.now() + TTL_SECONDS * 1000 });
+  memCache.set(k, { value, expires: Date.now() + ttl * 1000 });
 }

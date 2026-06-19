@@ -97,7 +97,14 @@ export function CharacterCard({ stats }: { stats: GameStats }) {
                 <h1 className="text-xl font-bold text-white">
                   {raw.name ?? raw.login}
                 </h1>
-                <p className="text-sm text-gray-400">@{raw.login}</p>
+                <a
+                  href={`https://github.com/${raw.login}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-gray-400 transition hover:text-purple-400 hover:underline"
+                >
+                  @{raw.login}
+                </a>
                 <p className="text-xs text-gray-500">{level.title}</p>
               </div>
             </div>
@@ -146,6 +153,11 @@ export function CharacterCard({ stats }: { stats: GameStats }) {
               <Stat label="Streak" value={`${raw.longestStreak}🔥`} />
               <Stat label="Repos" value={raw.totalRepos} />
             </div>
+            {raw.includesPrivate && (
+              <p className="mt-2 text-center text-[11px] font-semibold text-amber-400">
+                🔒 Includes private repo contributions
+              </p>
+            )}
 
             {/* Skills */}
             {skills.length > 0 && (

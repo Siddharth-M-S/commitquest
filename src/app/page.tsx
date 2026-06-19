@@ -2,15 +2,20 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Spinner } from "@/components/Spinner";
 
 export default function HomePage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function go(e: React.FormEvent) {
     e.preventDefault();
     const u = username.trim().replace(/^@/, "");
-    if (u) router.push(`/${u}`);
+    if (u) {
+      setLoading(true);
+      router.push(`/${u}`);
+    }
   }
 
   return (
@@ -31,13 +36,21 @@ export default function HomePage() {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="your-github-username"
-          className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white outline-none focus:border-purple-500"
+          disabled={loading}
+          className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white outline-none focus:border-purple-500 disabled:opacity-60"
         />
         <button
           type="submit"
-          className="rounded-lg bg-purple-600 px-6 py-3 font-bold text-white transition hover:bg-purple-500"
+          disabled={loading}
+          className="flex items-center justify-center gap-2 rounded-lg bg-purple-600 px-6 py-3 font-bold text-white transition hover:bg-purple-500 disabled:opacity-60"
         >
-          Reveal
+          {loading ? (
+            <>
+              <Spinner size={16} /> Revealing…
+            </>
+          ) : (
+            "Reveal"
+          )}
         </button>
       </form>
 
@@ -52,13 +65,6 @@ export default function HomePage() {
           </a>
         ))}
       </div>
-
-      <a
-        href="/pricing"
-        className="mt-8 text-sm text-purple-400 hover:text-purple-300"
-      >
-        ✦ Go Pro — premium card frames & private stats →
-      </a>
     </main>
   );
 }

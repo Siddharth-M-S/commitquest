@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "CommitQuest — Your GitHub history as an RPG character",
@@ -18,7 +19,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen font-mono antialiased">{children}</body>
+      <body className="min-h-screen font-mono antialiased">
+        <SiteHeader />
+        {children}
+      </body>
     </html>
   );
 }

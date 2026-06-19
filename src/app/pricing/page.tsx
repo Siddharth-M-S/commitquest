@@ -17,15 +17,20 @@ const FREE = [
 ];
 
 const PRO = [
-  "Private repo contributions",
-  "Premium card frames (holo, gold, obsidian, rose)",
-  "Watermark removed",
-  "Priority refresh",
+  "Private repo contributions counted",
+  "Premium frames (holo, gold, obsidian, rose)",
+  "Clean, watermark-free card",
+  "High-res 2× downloads",
+  "Custom title, tagline & layouts",
+  "Auto-updating README badge",
+  "Compare developers head-to-head",
+  "Priority 5-min refresh + leaderboard flair",
 ];
 
 export default function PricingPage() {
   const [me, setMe] = useState<Me | null>(null);
   const [loading, setLoading] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/me")
@@ -36,11 +41,27 @@ export default function PricingPage() {
 
   async function upgrade() {
     setLoading(true);
+    setNotice(null);
     try {
       const res = await fetch("/api/checkout", { method: "POST" });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-      else alert(data.error ?? "Checkout unavailable.");
+      let data: { url?: string; error?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        // non-JSON response
+      }
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      setNotice(
+        data.error ??
+          "We couldn't start checkout right now. Please try again in a moment."
+      );
+    } catch {
+      setNotice(
+        "Network error — please check your connection and try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -113,11 +134,22 @@ export default function PricingPage() {
               </div>
             )}
           </div>
+
+          {notice && (
+            <p className="mt-3 rounded-lg border border-red-900 bg-red-950/30 px-3 py-2 text-center text-xs text-red-300">
+              {notice}
+            </p>
+          )}
         </div>
       </div>
 
       <div className="mx-auto mt-10 max-w-3xl text-center text-xs text-gray-600">
         Secure billing by Stripe. Cancel anytime.
+        <div className="mt-3">
+          <a href="/faq" className="text-purple-400 hover:underline">
+            Questions? Read the FAQ →
+          </a>
+        </div>
       </div>
     </main>
   );

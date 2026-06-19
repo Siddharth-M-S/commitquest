@@ -2,8 +2,13 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getStats } from "@/lib/stats-service";
-import { rarityForLevel, resolveTheme } from "@/lib/card-theme";
+import {
+  rarityForLevel,
+  themeForStats,
+  PREMIUM_THEMES,
+} from "@/lib/card-theme";
 import { isPro } from "@/lib/subscriptions";
+import { getPrefs, PREF_LAYOUTS, type PrefLayout } from "@/lib/prefs";
 
 export const runtime = "nodejs";
 
@@ -26,15 +31,27 @@ export async function GET(
   { params }: { params: { username: string } }
 ) {
   const username = params.username;
-  const themeParam = new URL(req.url).searchParams.get("theme");
+  const reqUrl = new URL(req.url);
+  const themeParam = reqUrl.searchParams.get("theme");
   const f = await loadFonts();
   const fonts = [
     { name: "Noto", data: f.regular, weight: 400 as const, style: "normal" as const },
   ];
 
+  // Pro status is decided SERVER-SIDE only. No URL param can grant Pro.
+  const proStyle = await isPro(username);
+  // Pro card customization (title/tagline/theme/layout), ignored for free users.
+  const prefs = proStyle ? await getPrefs(username) : {};
+
+  // High-res 2x download is a Pro perk; ?scale=2 is honored only for Pro.
+  const scale =
+    proStyle && reqUrl.searchParams.get("scale") === "2" ? 2 : 1;
+  const W = 1200 * scale;
+  const H = 630 * scale;
+
   let stats;
   try {
-    stats = await getStats(username);
+    stats = await getStats(username, { pro: proStyle });
   } catch {
     return new ImageResponse(
       (
@@ -53,14 +70,49 @@ export async function GET(
           {`@${username} not found`}
         </div>
       ),
-      { width: 1200, height: 630, fonts }
+      { width: W, height: H, fonts }
     );
   }
 
   const { raw, level, primaryClass, skills, xp } = stats;
-  // Premium themes + watermark removal are Pro-only perks for the card owner.
-  const pro = await isPro(username);
-  const theme = resolveTheme(stats, pro ? themeParam : null);
+
+  // Free and Pro share the SAME clean type-color foil by default. A Pro user
+  // may opt into a premium frame via ?theme= (live preview) or a saved pref.
+  const effectiveTheme = themeParam ?? prefs.theme ?? null;
+  let theme;
+  if (proStyle && effectiveTheme && PREMIUM_THEMES[effectiveTheme]) {
+    theme = {
+      stat: stats.primaryClass?.stat ?? "LCK",
+      ...PREMIUM_THEMES[effectiveTheme],
+    };
+  } else {
+    theme = themeForStats(stats);
+  }
+
+  // Card layout: ?layout= preview wins, then saved pref, else detailed.
+  // Honored only for Pro users.
+  const layoutParam = reqUrl.searchParams.get("layout");
+  const layout: PrefLayout =
+    proStyle &&
+    layoutParam &&
+    (PREF_LAYOUTS as readonly string[]).includes(layoutParam)
+      ? (layoutParam as PrefLayout)
+      : proStyle && prefs.layout
+        ? prefs.layout
+        : "detailed";
+
+  // Custom title/tagline: ?title=/?tagline= preview wins, then saved pref.
+  // Honored only for Pro users.
+  const customTitle = proStyle
+    ? (reqUrl.searchParams.get("title") ?? prefs.title)?.trim().slice(0, 24) ||
+      undefined
+    : undefined;
+  const customTagline = proStyle
+    ? (reqUrl.searchParams.get("tagline") ?? prefs.tagline)
+        ?.trim()
+        .slice(0, 40) || undefined
+    : undefined;
+
   const rarity = rarityForLevel(level.level);
   const top3 = skills.slice(0, 3);
 
@@ -76,12 +128,15 @@ export async function GET(
     (
       <div
         style={{
-          width: "100%",
-          height: "100%",
+          width: 1200,
+          height: 630,
           display: "flex",
           background: "#06070d",
           padding: 18,
           fontFamily: "Noto",
+          ...(scale === 1
+            ? {}
+            : { transform: `scale(${scale})`, transformOrigin: "top left" }),
         }}
       >
         {/* Foil frame */}
@@ -205,7 +260,7 @@ export async function GET(
                   {`@${raw.login}`}
                 </div>
                 <div style={{ fontSize: 24, color: "#6b7280", marginTop: 2 }}>
-                  {level.title}
+                  {customTagline ?? level.title}
                 </div>
               </div>
             </div>
@@ -227,43 +282,47 @@ export async function GET(
                 border: `2px solid ${theme.glow}88`,
               }}
             >
-              {primaryClass
-                ? `${primaryClass.icon}  ${primaryClass.language} ${primaryClass.className}`
-                : "🌍  Wanderer"}
+              {customTitle
+                ? customTitle
+                : primaryClass
+                  ? `${primaryClass.icon}  ${primaryClass.language} ${primaryClass.className}`
+                  : "🌍  Wanderer"}
             </div>
 
-            {/* Ability stat boxes */}
-            <div style={{ display: "flex", gap: 16, marginTop: 16 }}>
-              {statBoxes.map(([label, value]) => (
-                <div
-                  key={label}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    flex: 1,
-                    padding: "14px 0",
-                    borderRadius: 16,
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <div style={{ fontSize: 36, fontWeight: 700, color: "#ffffff" }}>
-                    {value}
-                  </div>
+            {/* Ability stat boxes (hidden in minimal layout) */}
+            {layout !== "minimal" && (
+              <div style={{ display: "flex", gap: 16, marginTop: 16 }}>
+                {statBoxes.map(([label, value]) => (
                   <div
+                    key={label}
                     style={{
-                      fontSize: 20,
-                      color: "#9ca3af",
-                      letterSpacing: 1,
-                      marginTop: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      flex: 1,
+                      padding: "14px 0",
+                      borderRadius: 16,
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.08)",
                     }}
                   >
-                    {label}
+                    <div style={{ fontSize: 36, fontWeight: 700, color: "#ffffff" }}>
+                      {value}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 20,
+                        color: "#9ca3af",
+                        letterSpacing: 1,
+                        marginTop: 2,
+                      }}
+                    >
+                      {label}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
             {/* Footer: skills + brand */}
             <div
@@ -277,28 +336,32 @@ export async function GET(
               }}
             >
               <div style={{ display: "flex", gap: 22 }}>
-                {top3.map((s) => (
-                  <span key={s.language}>
-                    {`${s.icon} ${s.language} ${s.percentage}%`}
-                  </span>
-                ))}
+                {layout === "detailed" &&
+                  top3.map((s) => (
+                    <span key={s.language}>
+                      {`${s.icon} ${s.language} ${s.percentage}%`}
+                    </span>
+                  ))}
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  marginLeft: "auto",
-                  fontSize: 28,
-                  fontWeight: 700,
-                  color: theme.accent,
-                }}
-              >
-                {pro ? "✦ PRO" : "⚔ CommitQuest"}
-              </div>
+              {/* Pro perk: clean card. Free cards carry a brand watermark. */}
+              {!proStyle && (
+                <div
+                  style={{
+                    display: "flex",
+                    marginLeft: "auto",
+                    fontSize: 28,
+                    fontWeight: 700,
+                    color: theme.accent,
+                  }}
+                >
+                  ⚔ CommitQuest
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
     ),
-    { width: 1200, height: 630, fonts }
+    { width: W, height: H, fonts }
   );
 }

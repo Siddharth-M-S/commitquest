@@ -40,6 +40,7 @@ interface ProfileResult {
         name: string;
         stargazerCount: number;
         isFork: boolean;
+        isPrivate: boolean;
         primaryLanguage: { name: string; color: string | null } | null;
         languages: {
           edges: {
@@ -131,7 +132,9 @@ function aggregateLanguages(profile: ProfileResult): {
         color: edge.node.color,
       });
     }
-    if (topRepos.length < 6) {
+    // Private repos count toward totals (stars/languages) but their NAMES are
+    // never surfaced — only public repos appear in the displayed top list.
+    if (topRepos.length < 6 && !repo.isPrivate) {
       topRepos.push({
         name: repo.name,
         primaryLanguage: repo.primaryLanguage?.name ?? null,
@@ -178,6 +181,7 @@ export async function fetchRawStats(
   let totalPRs = 0;
   let totalPRReviews = 0;
   let totalIssues = 0;
+  let privateContributions = 0;
   const allDays: ContribDay[] = [];
 
   for (const yr of yearResults) {
@@ -186,6 +190,7 @@ export async function fetchRawStats(
     totalPRs += c.totalPullRequestContributions;
     totalPRReviews += c.totalPullRequestReviewContributions;
     totalIssues += c.totalIssueContributions;
+    privateContributions += c.restrictedContributionsCount;
     for (const week of c.contributionCalendar.weeks) {
       allDays.push(...week.contributionDays);
     }
@@ -193,6 +198,9 @@ export async function fetchRawStats(
 
   const cal = analyzeCalendar(allDays);
   const langAgg = aggregateLanguages(profile);
+  const includesPrivate =
+    privateContributions > 0 ||
+    profile.user.repositories.nodes.some((r) => r.isPrivate);
 
   return {
     login: profile.user.login,
@@ -206,6 +214,8 @@ export async function fetchRawStats(
     totalIssues,
     totalStarsEarned: langAgg.totalStars,
     totalRepos: profile.user.repositories.totalCount,
+    privateContributions,
+    includesPrivate,
     longestStreak: cal.longestStreak,
     currentStreak: cal.currentStreak,
     maxCommitsOneDay: cal.maxCommitsOneDay,

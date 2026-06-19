@@ -19,8 +19,22 @@ function key(login: string): string {
   return `pro:${login.toLowerCase()}`;
 }
 
+// Local dev override: comma-separated usernames treated as Pro. Only meant
+// for local testing without Redis/Stripe — this env var is never set in
+// production, so it cannot grant Pro to real users.
+function localProUsers(): Set<string> {
+  const raw = process.env.LOCAL_PRO_USERS ?? "";
+  return new Set(
+    raw
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean)
+  );
+}
+
 export async function isPro(login: string | undefined | null): Promise<boolean> {
   if (!login) return false;
+  if (localProUsers().has(login.toLowerCase())) return true;
   if (redis) {
     const v = await redis.get<number>(key(login));
     return v === 1;
