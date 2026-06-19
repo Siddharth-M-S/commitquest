@@ -40,11 +40,21 @@ export default async function ProfilePage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen px-4 py-10">
-      <div className="mx-auto mb-6 max-w-2xl">
+    <main className="min-h-screen px-4 py-5">
+      <div className="mx-auto mb-3 max-w-5xl flex items-center justify-between">
         <Link href="/" className="text-sm text-gray-500 hover:text-purple-400">
           ← CommitQuest
         </Link>
+        {!error && stats && (
+          <a
+            href={`/api/og/${username}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-gray-500 hover:text-purple-400"
+          >
+            View shareable card image →
+          </a>
+        )}
       </div>
 
       {error || !stats ? (
@@ -56,19 +66,7 @@ export default async function ProfilePage({ params }: Props) {
           </p>
         </div>
       ) : (
-        <>
-          <CharacterCard stats={stats} />
-          <div className="mx-auto mt-6 max-w-2xl text-center">
-            <a
-              href={`/api/og/${username}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-gray-500 hover:text-purple-400"
-            >
-              View shareable card image →
-            </a>
-          </div>
-        </>
+        <CharacterCard stats={stats} />
       )}
     </main>
   );
