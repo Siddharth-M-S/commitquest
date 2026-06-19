@@ -118,12 +118,18 @@ export default function PricingPage() {
                 {loading ? "Redirecting…" : "Upgrade to Pro"}
               </button>
             ) : me.authConfigured ? (
-              <button
-                onClick={() => signIn("github", { callbackUrl: "/pricing" })}
-                className="w-full rounded-lg bg-white py-3 font-bold text-black transition hover:bg-gray-200"
-              >
-                Sign in with GitHub
-              </button>
+              <>
+                <button
+                  onClick={() => signIn("github", { callbackUrl: "/pricing" })}
+                  className="w-full rounded-lg bg-white py-3 font-bold text-black transition hover:bg-gray-200"
+                >
+                  Sign in with GitHub
+                </button>
+                <p className="mt-2 text-center text-xs text-gray-500">
+                  Step 1 of 2 — sign in, then pay to unlock Pro. Browsing &amp;
+                  free cards never need an account.
+                </p>
+              </>
             ) : (
               <div className="rounded-lg border border-gray-700 bg-gray-900/60 p-3 text-center text-sm text-gray-400">
                 GitHub login isn&apos;t set up yet.

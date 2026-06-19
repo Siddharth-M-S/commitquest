@@ -80,6 +80,13 @@ export function SiteHeader() {
                   >
                     🪪 My card
                   </Link>
+                  <Link
+                    href="/account"
+                    className="block px-4 py-2.5 text-sm text-gray-200 transition hover:bg-purple-600/20"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    ⚙ Account
+                  </Link>
                   {!me.pro && (
                     <Link
                       href="/pricing"
