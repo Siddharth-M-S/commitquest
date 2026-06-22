@@ -70,7 +70,7 @@ export async function GET(
           {`@${username} not found`}
         </div>
       ),
-      { width: W, height: H, fonts }
+      { width: W, height: H, fonts, headers: { "Cache-Control": "no-store", "Netlify-CDN-Cache-Control": "no-store" } }
     );
   }
 
@@ -362,6 +362,15 @@ export async function GET(
         </div>
       </div>
     ),
-    { width: W, height: H, fonts }
+    {
+      width: W,
+      height: H,
+      fonts,
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate",
+        "CDN-Cache-Control": "no-store",
+        "Netlify-CDN-Cache-Control": "no-store",
+      },
+    }
   );
 }
