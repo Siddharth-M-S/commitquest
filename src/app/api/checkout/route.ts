@@ -3,6 +3,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getStripe, PRO_PRICE_ID } from "@/lib/stripe";
 
+// NOTE: Lemon Squeezy checkout is implemented but commented out until
+// LS store verification is complete. See src/lib/lemonsqueezy.ts.
+// import { createCheckoutUrl, LS_VARIANT_ID, LS_STORE_ID, getLSApiKey } from "@/lib/lemonsqueezy";
+
 export const runtime = "nodejs";
 
 export async function POST() {
@@ -28,7 +32,6 @@ export async function POST() {
     const checkout = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: PRO_PRICE_ID, quantity: 1 }],
-      // Carry the GitHub login through to the webhook.
       client_reference_id: session.login,
       metadata: { login: session.login },
       subscription_data: { metadata: { login: session.login } },

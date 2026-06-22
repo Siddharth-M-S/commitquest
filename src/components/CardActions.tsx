@@ -380,6 +380,7 @@ export function CardActions({
                 )}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
+                  key={previewVersion}
                   src={buildOgUrl({ bust: previewVersion })}
                   alt="Card preview"
                   onLoad={() => setPreviewLoading(false)}
