@@ -142,8 +142,9 @@ export function CardActions({
         body: JSON.stringify({ theme, layout, title, tagline }),
       });
       if (res.ok) {
-        setSavedMsg("✓ Saved — your card is updated");
+        setSavedMsg("✓ Saved — downloading your card…");
         router.refresh();
+        await download();
       } else {
         const e = await res.json().catch(() => ({}));
         setSavedMsg(e.error ? `✗ ${e.error}` : "✗ Failed to save");
@@ -358,7 +359,7 @@ export function CardActions({
                   disabled={saving}
                   className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-bold text-black transition hover:bg-amber-400 disabled:opacity-50"
                 >
-                  {saving ? "Saving…" : "Save card"}
+                  {saving ? "Saving & downloading…" : "💾 Save & Download"}
                 </button>
                 {savedMsg && (
                   <span className="text-xs text-gray-300">{savedMsg}</span>
