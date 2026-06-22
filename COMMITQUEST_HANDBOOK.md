@@ -87,7 +87,7 @@ it generates a glossy, shareable 1200×630 card image.
 **Product model:**
 - **Free** — anyone can view any GitHub user's card (no login), download it, share it,
   and browse the leaderboard. This is the viral, zero-friction core.
-- **Pro ($4/mo)** — for the signed-in owner: private-repo contributions counted, clean
+- **Pro ($4/yr)** — for the signed-in owner: private-repo contributions counted, clean
   watermark-free + 2× downloads, premium frames, custom title/tagline/layouts, a
   README badge, and head-to-head Compare.
 
@@ -174,7 +174,7 @@ cp .env.local.example .env.local
 | `UPSTASH_REDIS_REST_URL` | Prod **mandatory** | Upstash Redis REST URL. Without it, all state is in-memory and resets on restart. |
 | `UPSTASH_REDIS_REST_TOKEN` | Prod **mandatory** | Upstash Redis REST token. |
 | `STRIPE_SECRET_KEY` | For Pro | Stripe secret key (`sk_...`). |
-| `STRIPE_PRO_PRICE_ID` | For Pro | The recurring $4/mo price ID (`price_...`). |
+| `STRIPE_PRO_PRICE_ID` | For Pro | The recurring $4/yr price ID (`price_...`). |
 | `STRIPE_WEBHOOK_SECRET` | For Pro | Webhook signing secret (`whsec_...`). |
 | `LOCAL_PRO_USERS` | Dev only | Comma-separated usernames treated as Pro locally (e.g. `torvalds,you`). **Never set in production.** |
 | `HTTPS_PROXY` / `HTTP_PROXY` | Optional | Only if developing behind a corporate proxy (see §6). |
@@ -249,7 +249,7 @@ that **reset on every deploy/restart** — meaning purchases would vanish. Keys 
 
 ## 10. Stripe
 
-1. **Product + Price:** create Product "CommitQuest Pro" with a **recurring $4/month** price.
+1. **Product + Price:** create Product "CommitQuest Pro" with a **recurring $4/year** price.
    Copy the price ID (`price_...`) → `STRIPE_PRO_PRICE_ID`.
 2. **Secret key:** `sk_...` → `STRIPE_SECRET_KEY`.
 3. **Webhook endpoint:** `https://<your-domain>/api/stripe/webhook` with events:
@@ -260,7 +260,7 @@ that **reset on every deploy/restart** — meaning purchases would vanish. Keys 
 5. **Go live:** swap to live keys + a live webhook secret; set the business/account name in
    the Stripe dashboard (required for Checkout).
 
-> ⚠️ The displayed "$4/mo" on `/pricing` is **UI text**; the real charge is whatever the
+> ⚠️ The displayed "$4/yr" on `/pricing` is **UI text**; the real charge is whatever the
 > Stripe Price is set to. Keep them in sync.
 
 **Test the webhook locally:**
@@ -633,7 +633,7 @@ auth state (Sign in *or* `@user` + 👑 PRO + dropdown with My card / ⚙ Accoun
 **Change the Pro price**
 1. Stripe → create/update the recurring Price → copy `price_...`.
 2. Update `STRIPE_PRO_PRICE_ID` in Vercel → redeploy.
-3. Update the "$4/mo" text in `src/app/pricing/page.tsx` to match.
+3. Update the "$4/yr" text in `src/app/pricing/page.tsx` to match.
 
 **Add a premium theme** — add an entry to `PREMIUM_THEMES` in `src/lib/card-theme.ts`, then add
 its name to `PRO_THEMES` in `CardActions.tsx` and `PREF_THEMES` in `prefs.ts`.

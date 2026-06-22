@@ -94,8 +94,9 @@ export default function PricingPage() {
         <div className="rounded-2xl border border-purple-600 bg-gradient-to-b from-purple-900/30 to-panel p-6 shadow-xl">
           <h2 className="text-xl font-bold text-purple-300">Pro</h2>
           <p className="mt-1 text-3xl font-black">
-            $4<span className="text-base font-normal text-gray-400">/mo</span>
+            $4<span className="text-base font-normal text-gray-400">/year</span>
           </p>
+          <p className="text-xs text-gray-500 mt-0.5">Billed annually · ~$0.33/mo</p>
           <ul className="mt-5 space-y-2 text-sm text-gray-200">
             {PRO.map((f) => (
               <li key={f}>★ {f}</li>

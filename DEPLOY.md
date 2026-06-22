@@ -32,7 +32,7 @@ git push -u origin main
    | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | for login | from your GitHub OAuth App |
    | `UPSTASH_REDIS_REST_URL` / `_TOKEN` | recommended | free Upstash Redis (cache + Pro store) |
    | `STRIPE_SECRET_KEY` | for Pro | from Stripe dashboard |
-   | `STRIPE_PRO_PRICE_ID` | for Pro | the $4/mo recurring price ID |
+   | `STRIPE_PRO_PRICE_ID` | for Pro | the $4/yr recurring price ID |
    | `STRIPE_WEBHOOK_SECRET` | for Pro | from the webhook endpoint (step 4) |
 
 4. Deploy. You get a URL like `https://commitquest.vercel.app`.
@@ -47,7 +47,7 @@ git push -u origin main
 
 ## 4. Stripe (Pro tier)
 
-1. Create a **Product** "CommitQuest Pro" with a **recurring $4/month price**.
+1. Create a **Product** "CommitQuest Pro" with a **recurring $4/year price**.
    Copy the price ID (`price_...`) → `STRIPE_PRO_PRICE_ID`.
 2. Copy your secret key (`sk_...`) → `STRIPE_SECRET_KEY`.
 3. Add a **webhook endpoint**: `https://<your-domain>/api/stripe/webhook`
