@@ -90,7 +90,7 @@ export function CardActions({
       const qs = new URLSearchParams();
       if (pro) {
         if (theme) qs.set("theme", theme);
-        if (layout && layout !== "detailed") qs.set("layout", layout);
+        if (layout) qs.set("layout", layout);
         if (title) qs.set("title", title);
         if (tagline) qs.set("tagline", tagline);
         if (opts.hires) qs.set("scale", "2");
@@ -372,10 +372,14 @@ export function CardActions({
               <span className="text-xs uppercase tracking-wide text-gray-400">
                 Live preview
               </span>
-              <div className="relative w-full overflow-hidden rounded-xl border border-gray-700">
+              <div className="relative w-full overflow-hidden rounded-xl border border-gray-700 bg-gray-900" style={{ minHeight: 180 }}>
+                {/* Skeleton shown while image loads */}
                 {previewLoading && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-950/60">
-                    <Spinner size={28} />
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-gray-900">
+                    <div className="h-4 w-2/3 animate-pulse rounded-md bg-gray-700" />
+                    <div className="h-4 w-1/2 animate-pulse rounded-md bg-gray-700" />
+                    <div className="h-4 w-3/4 animate-pulse rounded-md bg-gray-700" />
+                    <div className="mt-2 h-3 w-1/3 animate-pulse rounded-md bg-gray-800" />
                   </div>
                 )}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -385,7 +389,7 @@ export function CardActions({
                   alt="Card preview"
                   onLoad={() => setPreviewLoading(false)}
                   onError={() => setPreviewLoading(false)}
-                  className="w-full"
+                  className={`w-full transition-opacity duration-300 ${previewLoading ? "opacity-0" : "opacity-100"}`}
                 />
               </div>
             </div>
