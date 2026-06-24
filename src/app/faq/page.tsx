@@ -61,7 +61,7 @@ const SECTIONS: Section[] = [
         a: (
           <>
             Yes. The full card, all-time public stats, the glossy image and
-            sharing are free forever. Pro ($4/mo) adds private stats, premium
+            sharing are free forever. Pro ($4/yr) adds private stats, premium
             looks and power features — see{" "}
             <Link href="/pricing" className="text-purple-400 hover:underline">
               pricing
@@ -223,14 +223,15 @@ const SECTIONS: Section[] = [
         ),
       },
       {
-        q: "Why is it worth $4/month?",
+        q: "Why is it worth $4/year?",
         a: (
           <>
             Pro isn&apos;t just cosmetic. Private-repo counting can dramatically
             change your real numbers if you work in private; the 2× clean
             download and badge make your card genuinely useful in READMEs,
             portfolios and talks; and Compare + faster refresh are real tools,
-            not stickers. If you only want a fun public card, Free is plenty.
+            not stickers. At ~$0.33/month it&apos;s less than a coffee a year.
+            If you only want a fun public card, Free is plenty.
           </>
         ),
       },
@@ -362,7 +363,7 @@ const SECTIONS: Section[] = [
         q: "How much is Pro and how am I billed?",
         a: (
           <>
-            Pro is $4/month, billed securely through Stripe as a subscription.
+            Pro is $4/year, billed annually and securely through Stripe.
             Your Pro status switches on the moment checkout completes.
           </>
         ),
@@ -372,7 +373,7 @@ const SECTIONS: Section[] = [
         a: (
           <>
             Yes. Cancel through Stripe and your Pro features turn off at the end
-            of the billing period — no lock-in. Your card and public stats stay
+            of the billing year — no lock-in. Your card and public stats stay
             available on the free tier.
           </>
         ),
