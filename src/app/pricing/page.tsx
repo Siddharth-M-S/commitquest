@@ -152,10 +152,15 @@ export default function PricingPage() {
 
       <div className="mx-auto mt-10 max-w-3xl text-center text-xs text-gray-600">
         Secure billing by Stripe. Cancel anytime.
-        <div className="mt-3">
+        <div className="mt-3 flex items-center justify-center gap-4">
           <a href="/faq" className="text-purple-400 hover:underline">
             Questions? Read the FAQ →
           </a>
+        </div>
+        <div className="mt-2 flex items-center justify-center gap-4">
+          <a href="/terms" className="hover:text-gray-400">Terms</a>
+          <a href="/privacy" className="hover:text-gray-400">Privacy</a>
+          <a href="/refund" className="hover:text-gray-400">Refund Policy</a>
         </div>
       </div>
     </main>
