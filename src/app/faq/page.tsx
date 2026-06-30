@@ -60,11 +60,12 @@ const SECTIONS: Section[] = [
         q: "Is it free?",
         a: (
           <>
-            Yes. The full card, all-time public stats, the glossy image and
-            sharing are free forever. Pro ($4/yr) adds private stats, premium
-            looks and power features — see{" "}
+            Yes — everything is free. The full card, all-time public stats, and
+            sharing are free. Pro unlocks private stats, premium looks and power
+            features, and it&apos;s also free — just star our GitHub repo to
+            unlock it. See the{" "}
             <Link href="/pricing" className="text-purple-400 hover:underline">
-              pricing
+              Pro page
             </Link>
             .
           </>
@@ -181,7 +182,7 @@ const SECTIONS: Section[] = [
     ],
   },
   {
-    title: "👑 Pro — what you get & why",
+    title: "👑 Pro — what you get & how to unlock it",
     items: [
       {
         q: "What does Pro actually add?",
@@ -223,15 +224,27 @@ const SECTIONS: Section[] = [
         ),
       },
       {
-        q: "Why is it worth $4/year?",
+        q: "How do I get Pro?",
         a: (
           <>
-            Pro isn&apos;t just cosmetic. Private-repo counting can dramatically
-            change your real numbers if you work in private; the 2× clean
-            download and badge make your card genuinely useful in READMEs,
-            portfolios and talks; and Compare + faster refresh are real tools,
-            not stickers. At ~$0.33/month it&apos;s less than a coffee a year.
-            If you only want a fun public card, Free is plenty.
+            Sign in with GitHub, then go to the{" "}
+            <Link href="/pricing" className="text-purple-400 hover:underline">
+              Pro page
+            </Link>{" "}
+            and click <strong>&quot;⭐ Star on GitHub to Get Pro&quot;</strong>.
+            Star the CommitQuest repo, come back, and click{" "}
+            <strong>&quot;I&apos;ve starred it — Verify&quot;</strong>. Pro
+            activates instantly once your star is confirmed.
+          </>
+        ),
+      },
+      {
+        q: "Is Pro really free?",
+        a: (
+          <>
+            Yes. No credit card, no payment, no trial period. Just star the
+            GitHub repo and you have full Pro access forever. Stars help
+            CommitQuest get discovered — it&apos;s a fair trade.
           </>
         ),
       },
@@ -252,8 +265,7 @@ const SECTIONS: Section[] = [
           <>
             No. Ranking is pure XP — Pro never buys you a higher spot. Pro only
             adds a visual 👑 highlight to your row. (Private contributions can
-            raise your XP, but that&apos;s real activity, not a pay-to-win
-            boost.)
+            raise your XP, but that&apos;s real activity, not a shortcut.)
           </>
         ),
       },
@@ -357,50 +369,6 @@ const SECTIONS: Section[] = [
     ],
   },
   {
-    title: "💳 Billing & account",
-    items: [
-      {
-        q: "How much is Pro and how am I billed?",
-        a: (
-          <>
-            Pro is $4/year, billed annually and securely through Stripe.
-            Your Pro status switches on the moment checkout completes.
-          </>
-        ),
-      },
-      {
-        q: "Can I cancel anytime?",
-        a: (
-          <>
-            Yes. Cancel through Stripe and your Pro features turn off at the end
-            of the billing year — no lock-in. Your card and public stats stay
-            available on the free tier.
-          </>
-        ),
-      },
-      {
-        q: "What happens to my card if I cancel?",
-        a: (
-          <>
-            Nothing disappears — you simply return to the free experience: public
-            stats, the glossy card, and sharing. Premium frames, private
-            counting, the badge and Compare turn off.
-          </>
-        ),
-      },
-      {
-        q: "I paid but I'm not showing as Pro — what do I do?",
-        a: (
-          <>
-            Pro activates via Stripe&apos;s confirmation, which is usually
-            instant. If it hasn&apos;t flipped within a minute, refresh your
-            profile (signed in). Still stuck? Reach out and we&apos;ll sort it.
-          </>
-        ),
-      },
-    ],
-  },
-  {
     title: "🛠 Embeds & sharing",
     items: [
       {
@@ -456,7 +424,7 @@ export default function FaqPage() {
             href="/pricing"
             className="text-sm text-purple-400 hover:text-purple-300"
           >
-            ✦ Go Pro →
+            ⭐ Get Pro Free →
           </Link>
         </div>
 

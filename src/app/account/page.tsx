@@ -83,7 +83,7 @@ export default async function AccountPage() {
                 }`}
               >
                 <p className="text-xs uppercase tracking-wide text-gray-500">
-                  Subscription
+                   Pro Status
                 </p>
                 {pro ? (
                   <>
@@ -103,8 +103,9 @@ export default async function AccountPage() {
                       Free plan
                     </p>
                     <p className="mt-2 text-sm text-gray-400">
-                      You&apos;re on the free tier. Upgrade to unlock private
-                      stats, premium looks and more.
+                      You&apos;re on the free tier. Star our GitHub repo to
+                      unlock private stats, premium looks and more — completely
+                      free.
                     </p>
                     <Link
                       href="/pricing"
@@ -128,12 +129,12 @@ export default async function AccountPage() {
                   <span className="font-mono text-gray-200">@{login}</span>.
                 </li>
                 <li>
-                  On every page, our server checks your subscription record for
+                  On every page, our server checks your Pro status for
                   that username.
                 </li>
                 <li>
-                  That record is set the moment your Stripe payment succeeds —
-                  and cleared if you cancel.
+                  Pro is granted the moment you star our GitHub repo and verify —
+                  and is re-checked on every page load.
                 </li>
                 <li>
                   Result for you right now:{" "}

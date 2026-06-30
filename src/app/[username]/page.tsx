@@ -12,7 +12,7 @@ export const revalidate = 0;
 
 interface Props {
   params: { username: string };
-  searchParams: { upgraded?: string };
+  searchParams: Record<string, string | undefined>;
 }
 
 // Turn any raw fetch error into a calm, user-facing message — never expose
@@ -62,9 +62,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ProfilePage({ params, searchParams }: Props) {
+export default async function ProfilePage({ params }: Props) {
   const username = params.username;
-  const justUpgraded = searchParams?.upgraded === "1";
 
   const pro = await isPro(username);
   const session = await getServerSession(authOptions);
@@ -83,32 +82,6 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
   return (
     <main className="min-h-screen px-4 py-5">
-      {/* Stripe success: celebrate a fresh Pro upgrade */}
-      {justUpgraded && pro && (
-        <div className="mx-auto mb-4 max-w-5xl rounded-xl border border-amber-500/50 bg-amber-500/10 p-4 text-center">
-          <p className="text-lg font-bold text-amber-300">
-            🎉 Welcome to CommitQuest Pro!
-          </p>
-          <p className="mt-1 text-sm text-gray-300">
-            Your private stats, premium frames, custom title, layouts and the
-            README badge are all unlocked. Open{" "}
-            <span className="font-semibold text-amber-200">👑 Customize</span>{" "}
-            below to make your card yours.
-          </p>
-        </div>
-      )}
-      {/* Payment succeeded but Pro hasn't flipped on yet (webhook still landing) */}
-      {justUpgraded && !pro && (
-        <div className="mx-auto mb-4 max-w-5xl rounded-xl border border-purple-700/50 bg-purple-900/20 p-4 text-center">
-          <p className="text-base font-bold text-purple-200">
-            ✅ Payment received — activating your Pro features…
-          </p>
-          <p className="mt-1 text-sm text-gray-400">
-            This usually takes a few seconds. Refresh this page in a moment if
-            your 👑 PRO badge isn&apos;t showing yet.
-          </p>
-        </div>
-      )}
 
       <div className="mx-auto mb-3 max-w-5xl flex items-center justify-between">
         <Link href="/" className="text-sm text-gray-500 hover:text-purple-400">

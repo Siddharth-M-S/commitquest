@@ -35,8 +35,8 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="mb-2 text-base font-bold text-white">4. Pro Subscription</h2>
-            <p>CommitQuest Pro is available as a one-time or annual payment processed securely through our payment provider. Pro features are activated upon successful payment confirmation. Pricing is displayed on the <Link href="/pricing" className="text-purple-400 hover:underline">pricing page</Link>.</p>
+            <h2 className="mb-2 text-base font-bold text-white">4. Pro Access</h2>
+            <p>CommitQuest Pro is unlocked for free by starring our GitHub repository. Pro features are activated instantly once your star is verified. Pro access is tied to your GitHub account and is maintained as long as your star remains on the repository. See the <Link href="/pricing" className="text-purple-400 hover:underline">Pro page</Link> for details.</p>
           </section>
 
           <section>
@@ -72,7 +72,6 @@ export default function TermsPage() {
 
         <div className="mt-10 flex gap-4 text-xs text-gray-600">
           <Link href="/privacy" className="hover:text-purple-400">Privacy Policy</Link>
-          <Link href="/refund" className="hover:text-purple-400">Refund Policy</Link>
         </div>
       </div>
     </main>

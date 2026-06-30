@@ -26,7 +26,6 @@ export default function PrivacyPage() {
               <li><strong>GitHub public data:</strong> username, display name, avatar, public contribution stats, language usage, stars, and repositories.</li>
               <li><strong>GitHub private data (Pro only):</strong> aggregate private contribution counts — we never read code, file names, or repo names.</li>
               <li><strong>Account data:</strong> GitHub login and OAuth token (stored securely in your session, never logged or shared).</li>
-              <li><strong>Payment data:</strong> handled entirely by our payment provider. We never store card numbers or bank details.</li>
             </ul>
           </section>
 
@@ -34,7 +33,7 @@ export default function PrivacyPage() {
             <h2 className="mb-2 text-base font-bold text-white">2. How We Use Your Information</h2>
             <ul className="ml-4 mt-2 list-disc space-y-1">
               <li>To generate and display your GitHub RPG character card.</li>
-              <li>To activate and verify your Pro subscription status.</li>
+              <li>To verify your Pro status via GitHub star check.</li>
               <li>To cache your card stats for performance (public cards: 6 hours, Pro cards: 5 minutes).</li>
               <li>To display your entry on the public leaderboard.</li>
             </ul>
@@ -56,7 +55,6 @@ export default function PrivacyPage() {
             <p>We do not sell, trade, or share your personal data with third parties except:</p>
             <ul className="ml-4 mt-2 list-disc space-y-1">
               <li><strong>GitHub:</strong> to fetch your contribution data via their API.</li>
-              <li><strong>Payment providers:</strong> to process your Pro subscription payment.</li>
               <li><strong>Upstash:</strong> our Redis provider, used to store Pro status and preferences.</li>
             </ul>
           </section>
@@ -89,7 +87,6 @@ export default function PrivacyPage() {
 
         <div className="mt-10 flex gap-4 text-xs text-gray-600">
           <Link href="/terms" className="hover:text-purple-400">Terms &amp; Conditions</Link>
-          <Link href="/refund" className="hover:text-purple-400">Refund Policy</Link>
         </div>
       </div>
     </main>
