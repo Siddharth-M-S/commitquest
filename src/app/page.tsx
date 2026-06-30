@@ -19,7 +19,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
+    <main className="flex flex-1 flex-col items-center justify-center px-6 text-center">
       <h1 className="text-5xl font-black tracking-tight sm:text-7xl">
         Commit<span className="text-purple-500">Quest</span>
       </h1>
