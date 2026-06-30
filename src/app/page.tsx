@@ -65,6 +65,18 @@ export default function HomePage() {
           </a>
         ))}
       </div>
+
+      <p className="fixed bottom-4 right-4 text-xs text-gray-600">
+        Built by{" "}
+        <a
+          href="https://github.com/Siddharth-M-S"
+          target="_blank"
+          rel="noreferrer"
+          className="transition-colors hover:text-gray-400"
+        >
+          Siddharth M S
+        </a>
+      </p>
     </main>
   );
 }
