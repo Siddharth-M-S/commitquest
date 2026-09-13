@@ -50,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${u} — CommitQuest`,
     description: `${u}'s GitHub RPG character card.`,
+    alternates: { canonical: `/${u}` },
     openGraph: {
       title: `${u} on CommitQuest`,
       description: `Check out ${u}'s GitHub RPG character.`,
